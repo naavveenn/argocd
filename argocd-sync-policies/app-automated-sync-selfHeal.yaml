@@ -1,0 +1,27 @@
+# This application has 2 policies in place i.e. auto-sync and selfHeal
+# selfHeal: This ensures that any manual changes made to Kubernetes resources managed by ArgoCD are automatically reverted.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: app-nginx-auto-sync
+spec:
+  destination:
+    namespace: nginx-auto-sync
+    server: https://kubernetes.default.svc            # value from argocd cluster list command
+  project: default
+  source:
+    helm:      #this section is to override the release name, if not specified then metadata.name will be used during deploymen
+      releaseName: nginx-helm
+      #parameters:  #this section is to override the release name, if not specified then metadata.name will be used during deployment
+      #- name: "replicaCount"
+      #  value: "2"
+      valueFiles:      # if you need to specify a separate file for values
+      #- custome-values.yaml                         # custom values file in same directory as "path" specified below
+      #- ../../custom-values.yaml                    # custom values file in a diff directory
+      - ../../app/dev/service/demo/custom-values.yaml # custom values file in a diff directory
+    path: argocd-application/helm/nginx               # where your helm chart exists
+    repoURL: https://github.com/naavveenn/argocd.git  # URL for git repo
+    targetRevision: main                              # branch name or tag name or commit id
+  syncPolicy:
+    automated:
+      selfHeal: true    #This ensures that any manual changes made to Kubernetes resources managed by ArgoCD are automatically reverted.
