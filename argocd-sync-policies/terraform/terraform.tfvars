@@ -1,6 +1,6 @@
 # update the correct values before apply
 username              = "admin"
-password              = "D3whFdxtxiOf8w83"
+password              = "PASTE_HERE"
 server_addr           = "127.0.0.1:62907"
 namespace             = "argocd"
 repo_url              = "https://github.com/naavveenn/argocd.git"
