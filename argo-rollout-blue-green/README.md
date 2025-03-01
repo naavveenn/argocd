@@ -1,10 +1,46 @@
 ```md
 # Blue-Green Deployment with Argo Rollouts on Minikube  
 
-## 1. Build and Load the Docker Image  
+## 1. Install Argo Rollouts  
+
+### Install Argo Rollouts Controller  
+Create a new namespace and deploy Argo Rollouts:  
+```sh
+kubectl create namespace argo-rollouts
+kubectl apply -n argo-rollouts -f https://github.com/argoproj/argo-rollouts/releases/latest/download/install.yaml
+```  
+This creates the **argo-rollouts** namespace where the Argo Rollouts controller will run.  
+
+### Install the Kubectl Plugin  
+
+#### **Using Homebrew (Recommended for macOS)**  
+```sh
+brew install argoproj/tap/kubectl-argo-rollouts
+```  
+
+#### **Manual Installation**  
+```sh
+curl -LO https://github.com/argoproj/argo-rollouts/releases/latest/download/kubectl-argo-rollouts-darwin-amd64
+```  
+For Linux distributions, replace **darwin** with **linux**.  
+
+Make the binary executable and move it to `/usr/local/bin`:  
+```sh
+chmod +x ./kubectl-argo-rollouts-darwin-amd64
+sudo mv ./kubectl-argo-rollouts-darwin-amd64 /usr/local/bin/kubectl-argo-rollouts
+```  
+
+Verify the installation:  
+```sh
+kubectl argo rollouts version
+```  
+
+---
+
+## 2. Build and Load the Docker Image  
+
 Build the Docker image locally:  
 ```sh
-cd blue-green-app 
 docker build -t blue-green .
 ```  
 Since the image is stored locally, it won’t be available inside Minikube. Load it into Minikube:  
@@ -12,10 +48,12 @@ Since the image is stored locally, it won’t be available inside Minikube. Load
 minikube image load blue-green:latest
 ```  
 
-## 2. Deploy the Application  
+---
+
+## 3. Deploy the Application  
+
 Apply the deployment and ingress configurations:  
 ```sh
-cd blue-green-manifest
 kubectl apply -f rollout.yaml
 kubectl apply -f ingress.yaml
 ```  
@@ -24,7 +62,10 @@ Once all pods are running and the ingress is up, start a Minikube tunnel in a se
 minikube tunnel
 ```  
 
-## 3. Verify the Deployment  
+---
+
+## 4. Verify the Deployment  
+
 Run the following `curl` command to check if the application is accessible:  
 ```sh
 curl --resolve "blue-green.demo:80:127.0.0.1" -i http://blue-green.demo
@@ -47,7 +88,8 @@ http://blue-green.demo
 
 ---
 
-## 4. Testing Blue-Green Deployment  
+## 5. Testing Blue-Green Deployment  
+
 Modify `rollout.yaml` to update the `html_name` environment variable:  
 ```yaml
 env:
@@ -76,7 +118,8 @@ Click **Promote** in the upper right corner.
 
 ---
 
-## 5. Rolling Back to a Previous Version  
+## 6. Rolling Back to a Previous Version  
+
 If you need to roll back:  
 1. Click **Rollback** in the Argo Rollouts dashboard.  
 2. New pods will be created for the previous revision (`blue`), but the app will still be serving the current version (`green`).  
@@ -84,9 +127,9 @@ If you need to roll back:
 
 ---
 
-## 6. How Argo Rollouts Tracks Releases  
+## 7. How Argo Rollouts Tracks Releases  
+
 Argo Rollouts uses **selectors with unique hash values** to manage active and preview versions. These hash values determine which revision is active and can be viewed in the dashboard.  
 
 > **By following this approach, you ensure smooth blue-green deployments with controlled rollouts and rollback capabilities in Minikube using Argo Rollouts.** 
-```
 
