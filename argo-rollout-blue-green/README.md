@@ -89,5 +89,4 @@ Argo Rollouts uses **selectors with unique hash values** to manage active and pr
 
 > **By following this approach, you ensure smooth blue-green deployments with controlled rollouts and rollback capabilities in Minikube using Argo Rollouts.** 
 ```
----
 
