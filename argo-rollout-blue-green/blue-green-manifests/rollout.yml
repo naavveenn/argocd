@@ -1,0 +1,57 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: blue-green-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: blue-green-deployment
+  template:
+    metadata:
+      labels:
+        app: blue-green-deployment
+    spec:
+      containers:
+      - name: blue-green
+        image: blue-green
+        imagePullPolicy: Never
+        env:
+        - name: html_name
+          value: "app-v2.html"
+        ports:
+        - containerPort: 5000
+  strategy:
+    blueGreen: 
+      activeService: rollout-bluegreen-active
+      previewService: rollout-bluegreen-preview
+      autoPromotionEnabled: false               #Auto promote new release
+      # abortScaleDownDelaySeconds: 10          
+      # scaleDownDelaySeconds: 60               #Use to delay pod deletion of old rs/pods for 60seconds after new service is promoted
+      # previewReplicaCount: 1                  #Number of replica that new version of application should run before it is made active/promoted. Argo will automatically scale this number to match the spec.replica section before it is fully promoted. Rollout will not switch the service to Active Service until it matches spec.replicas  
+      # autoPromotionSeconds: 20                #If autoPromoteEnabled is set to true, then based on this flag the new release will be delpoyed after 20seconds
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: rollout-bluegreen-active
+spec:
+  selector:
+    app: blue-green-deployment
+  ports:
+  - protocol: TCP
+    port: 5000
+    targetPort: 5000
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: rollout-bluegreen-preview
+spec:
+  selector:
+    app: blue-green-deployment
+  ports:
+  - protocol: TCP
+    port: 5000
+    targetPort: 5000
