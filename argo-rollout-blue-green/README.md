@@ -1,4 +1,3 @@
-```md
 # Blue-Green Deployment with Argo Rollouts on Minikube  
 
 ## 1. Install Argo Rollouts  
