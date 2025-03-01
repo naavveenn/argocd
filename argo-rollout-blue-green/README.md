@@ -40,11 +40,15 @@ kubectl argo rollouts version
 
 Build the Docker image locally:  
 ```sh
+cd blue-green-app
 docker build -t blue-green .
+docker images |grep 'blue-green'
 ```  
 Since the image is stored locally, it won’t be available inside Minikube. Load it into Minikube:  
 ```sh
 minikube image load blue-green:latest
+minikube ssh
+docker images |grep 'blue-green'
 ```  
 
 ---
@@ -53,6 +57,7 @@ minikube image load blue-green:latest
 
 Apply the deployment and ingress configurations:  
 ```sh
+cd blue-green-manifests
 kubectl apply -f rollout.yaml
 kubectl apply -f ingress.yaml
 ```  
