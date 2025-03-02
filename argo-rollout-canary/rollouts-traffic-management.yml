@@ -1,0 +1,61 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: rollouts-traffic-management
+spec:
+  replicas: 5
+  strategy:
+    canary:
+      # dynamicStableScale: true          #this means previous release pods will be scale down dynamically. If this is false, previous version will stay for 30seconds before controller scale down all the old pods from previous release at the same time.
+      # abortScaleDownDelaySeconds: 20
+      canaryService: canary-service
+      stableService: stable-service
+      trafficRouting:
+        nginx:
+          stableIngress: rollouts-traffic-management
+      steps:
+      #- setWeight: 20 # Using Setweight Only
+      #- pause: {}
+      - setCanaryScale:   # Using SetCanaryScale with SetWeight. It will scale canary pods 60% i.e. 3 pods and then send 40% of traffic to those pods
+          weight: 60      # Controller will create a new replicaSet with 3 pods with new version of application and 40% of traffic will be send to these 3 pods
+      - setWeight: 40
+      - pause: {}         # after promotion 100% will be send to new release
+  selector:
+    matchLabels:
+      app: rollouts-traffic-management
+  template:
+    metadata:
+      labels:
+        app: rollouts-traffic-management
+    spec:
+      containers:
+      - name: rollouts-traffic-management
+        image: canary
+        imagePullPolicy: Never
+        env:
+        - name: html_name
+          value: "app-v2.html"
+        ports:
+        - containerPort: 5000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: canary-service
+spec:
+  ports:
+  - port: 5000
+    targetPort: 5000
+  selector:
+    app: rollouts-traffic-management
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: stable-service
+spec:
+  ports:
+  - port: 5000
+    targetPort: 5000
+  selector:
+    app: rollouts-traffic-management

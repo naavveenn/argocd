@@ -1,0 +1,45 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: rollouts-setweight
+spec:
+  replicas: 5
+  strategy:
+    canary:
+      steps:
+      - setWeight: 20          # 20% of 5 is 1 pod which means 20% of traffic will be sent to 1 new pod and 80% to old pods
+      - pause: {}              # we dont have duration for this pause, which means rollout will wait forever until promoted manually. After promotion it will send 40% of traffic to new pods
+      - setWeight: 40          # 40% of 5 is 2 pod which means 40% of traffic will be sent to 2 new pods.
+      - pause: {duration: 10s} # Pause is for 10seconds which means rollout will be paused for 10secs and after 10seconds 60% of traffic will be sent to new pods
+      - setWeight: 60          # 60% of 5 is 3 pod which means 60% of traffic will be sent to 3 new pods.
+      - pause: {duration: 20s} # Pause is for 20seconds which means rollout will be paused for 20secs and after 20seconds 80% of traffic will be sent to new pods
+      - setWeight: 80          # 80% of 5 is 4 pod which means 80% of traffic will be sent to 4 new pods.
+      - pause: {duration: 1m}  # Pause is for 1minute which means rollout will be paused for 1min and after 1min 100% of traffic will be sent to new pods
+  selector:
+    matchLabels:
+      app: rollouts-setweight
+  template:
+    metadata:
+      labels:
+        app: rollouts-setweight
+    spec:
+      containers:
+      - name: rollouts-setweight
+        image: canary
+        imagePullPolicy: Never
+        env:
+        - name: html_name
+          value: "app-v1.html"
+        ports:
+        - containerPort: 5000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rollouts-setweight
+spec:
+  ports:
+  - port: 5000
+    targetPort: 5000
+  selector:
+    app: rollouts-setweight
