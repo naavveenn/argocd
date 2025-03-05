@@ -5,7 +5,7 @@ metadata:
   namespace: argocd
 spec:
   destination:
-    namespace: default
+    namespace: nginx
     server: https://kubernetes.default.svc            # value from argocd cluster list command
   project: default
   source:
@@ -21,9 +21,3 @@ spec:
     path: argocd-application/helm/nginx               # where your helm chart exists
     repoURL: https://github.com/naavveenn/argocd.git  # URL for git repo
     targetRevision: main                              # branch name or tag name or commit id
-  syncPolicy:
-    automated: {}
-    syncOptions:
-    - ApplyOutOfSyncOnly=true
-    - CreateNamespace=true
-
