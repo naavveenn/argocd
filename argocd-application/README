@@ -1,0 +1,72 @@
+### Installing ArgoCD  
+
+1. Add the Argo Helm repository:  
+   ```bash
+   helm repo add argo https://argoproj.github.io/argo-helm
+   helm repo list
+   ```  
+
+2. Create a namespace for ArgoCD:  
+   ```bash
+   kubectl create ns argocd
+   ```  
+
+3. Set up a directory for Helm configurations:  
+   ```bash
+   mkdir argo-helm && cd argo-helm
+   vim values.yaml
+
+   server:
+     service:
+       type: NodePort
+       nodePortHttp: 32073
+       nodePortHttps: 32074
+
+   ```  
+
+4. Deploy ArgoCD using Helm:  
+   ```bash
+   helm install argocd argo/argo-cd -n argocd -f values.yaml
+   ```  
+
+5. Verify the installation:  
+   ```bash
+   kubectl get pods -n argocd
+   kubectl get svc -n argocd
+   ```  
+
+### Accessing the ArgoCD UI  
+
+Retrieve the ArgoCD server URL using Minikube:  
+   ```bash
+   minikube service -n argocd argocd-server --url
+   ```  
+
+Check secrets for admin credentials:  
+   ```bash
+   kubectl get secret -n argocd
+   kubectl get secret -n argocd argocd-initial-admin-secret -o yaml
+   ```  
+
+### Installing the ArgoCD CLI  
+
+1. Download the ArgoCD CLI:  
+   ```bash
+   curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+   ```  
+
+2. Install the binary:  
+   ```bash
+   sudo install -m 555 argocd-linux-amd64 /usr/local/bin/argocd
+   rm argocd-linux-amd64
+   ```  
+
+3. Verify installation:  
+   ```bash
+   argocd version --client
+   ```  
+
+4. Log in to ArgoCD (port depends on Minikube service command output):  
+   ```bash
+   argocd login 127.0.0.1:58584 --insecure  
+   ```  
