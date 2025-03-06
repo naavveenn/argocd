@@ -141,4 +141,4 @@ If you need to roll back:
 ## 7. How Argo Rollouts Tracks Releases  
 
 Argo Rollouts uses **selectors with unique hash values** to manage active and preview versions. These hash values determine which revision is active and can be viewed in the dashboard.  
-> **By following this approach, you ensure smooth blue-green deployments with controlled rollouts and rollback capabilities in Minikube using Argo Rollouts.** 
+> **By following this approach, you ensure smooth canary deployments with controlled rollouts and rollback capabilities in Minikube using Argo Rollouts.** 
