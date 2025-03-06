@@ -90,9 +90,12 @@ http://rollouts-setweight.demo
 ```  
 
 ```sh
-Run below command to open the argo-rollout dashboard
+Run below command to open the argo-rollout dashboard:
+
 kubectl argo rollouts dashboard
-It will give the below output (port might vary)
+
+It will give the below output (port may vary):
+
 Argo Rollouts Dashboard is now available at http://localhost:3100/rollouts
 ```
 
@@ -138,4 +141,4 @@ If you need to roll back:
 ## 7. How Argo Rollouts Tracks Releases  
 
 Argo Rollouts uses **selectors with unique hash values** to manage active and preview versions. These hash values determine which revision is active and can be viewed in the dashboard.  
-e
+> **By following this approach, you ensure smooth blue-green deployments with controlled rollouts and rollback capabilities in Minikube using Argo Rollouts.** 
