@@ -90,6 +90,13 @@ You should still receive a **200 OK** response. Open your browser and visit:
 http://blue-green.demo
 ```  
 
+```sh
+Run below command to open the argo-rollout dashboard
+kubectl argo rollouts dashboard
+It will give the below output (port might vary)
+Argo Rollouts Dashboard is now available at http://localhost:3100/rollouts
+```
+
 ---
 
 ## 5. Testing Blue-Green Deployment  
