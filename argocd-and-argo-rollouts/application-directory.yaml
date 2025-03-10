@@ -12,7 +12,7 @@ spec:
     helm:      #this section is to override the release name, if not specified then metadata.name will be used during deploymen
       releaseName: rollout-app
       - ../../app/dev/service/demo/custom-values.yaml # custom values file in a diff directory
-    path: argocd-application/helm/nginx               # where your helm chart exists
+    path: argocd-and-argo-rollouts/helm/rollout-setweight               # where your helm chart exists
     repoURL: https://github.com/naavveenn/argocd.git  # URL for git repo
     targetRevision: main                              # branch name or tag name or commit id
   syncPolicy:
