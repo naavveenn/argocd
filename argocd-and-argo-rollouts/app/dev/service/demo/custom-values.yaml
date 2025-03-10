@@ -8,7 +8,7 @@ container:
   name: rollouts-setweight
   port: 5000
   env:
-    html_name: "app-v2.html"
+    html_name: "app-v1.html"
 
 service:
   name: rollouts-setweight
