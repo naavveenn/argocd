@@ -1,0 +1,26 @@
+replicaCount: 4
+
+image:
+  repository: canary
+  pullPolicy: Never
+
+container:
+  name: rollouts-setweight
+  port: 5000
+  env:
+    html_name: "app-v1.html"
+
+service:
+  name: rollouts-setweight
+  type: ClusterIP
+  port: 5000
+  targetPort: 5000
+
+ingress:
+  enabled: true
+  className: "nginx"
+  host: rollouts-setweight.demo
+  path: /
+  pathType: Prefix
+  servicePort: 5000
+

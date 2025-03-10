@@ -1,0 +1,7 @@
+apiVersion: v2
+name: rollouts-setweight
+description: A Helm chart for deploying rollouts-setweight application
+type: application
+version: 0.1.0
+appVersion: "1.0"
+
