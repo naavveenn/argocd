@@ -1,4 +1,4 @@
-replicaCount: 2
+replicaCount: 4
 
 image:
   repository: canary
@@ -8,7 +8,7 @@ container:
   name: rollouts-setweight
   port: 5000
   env:
-    html_name: "app-v1.html"
+    html_name: "app-v2.html"
 
 service:
   name: rollouts-setweight
