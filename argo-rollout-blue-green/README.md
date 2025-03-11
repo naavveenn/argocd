@@ -49,6 +49,10 @@ Since the image is stored locally, it won’t be available inside Minikube. Load
 minikube image load blue-green:latest
 minikube ssh
 docker images |grep 'blue-green'
+
+# Enable ingress on minikube
+minikube addons enable ingress
+kubectl get pods -n ingress-nginx
 ```  
 
 ---
