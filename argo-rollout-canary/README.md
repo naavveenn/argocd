@@ -49,6 +49,10 @@ Since the image is stored locally, it won’t be available inside Minikube. Load
 minikube image load canary:latest
 minikube ssh
 docker images |grep 'canary'
+
+# Enable Ingress
+minikube addons enable ingress
+kubectl get pods -n ingress-nginx
 ```  
 
 ---
